@@ -1,0 +1,82 @@
+---
+- name: Ubuntu Ec2 Instnace Setup
+  hosts: ec2_instance
+  user: ubuntu
+  become: yes  # To run tasks with sudo privileges
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Install Java
+      apt:
+        name: openjdk-11-jdk
+        state: present
+
+   # - name: Install Jenkins
+   #   apt:
+   #     name: jenkins
+   #     state: present
+
+    #- name: Install NVM
+    #  command: >
+    #    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+    #  args:
+    #    creates: ~/.nvm
+
+    - name: Install Python
+      apt:
+        name: python3
+        state: present
+
+
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+
+    - name: Install SonarQube Scanner CLI
+      shell: |
+        curl -sSLo /tmp/sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.0.2311-linux.zip
+        unzip -q /tmp/sonar-scanner-cli.zip -d /opt
+        ln -s /opt/sonar-scanner-4.6.0.2311-linux /opt/sonar-scanner
+      args:
+        creates: /opt/sonar-scanner
+      
+    - name: Install nvm
+      shell: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+#          source ~/.bashrc
+      args:
+        creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+    - name: Install PostgreSQL client
+      apt:
+        name: postgresql-client
+        state: present
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Install Certbot
+      apt:
+        name: certbot
+        state: present
+
+    - name: Install Certbot Nginx plugin
+      apt:
+        name: python3-certbot-nginx
+        state: present
+
+    - name: Install Docker Compose
+      apt:
+        name: docker-compose
+        state: present
